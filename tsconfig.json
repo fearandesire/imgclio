@@ -1,0 +1,26 @@
+{
+	"extends": [
+		"@tsconfig/node20/tsconfig.json",
+		"@tsconfig/strictest/tsconfig.json"
+	],
+	"compilerOptions": {
+		"strict": true,
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"exactOptionalPropertyTypes": true,
+		"outDir": "dist",
+		"lib": ["es2024"],
+		"esModuleInterop": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"],
+			"@lib/*": ["src/lib/*"],
+			"@types/*": ["src/types/*"]
+		},
+		"moduleResolution": "node16",
+		"module": "node16"
+	},
+
+	"include": ["src", "src/test"],
+	"exclude": ["node_modules", "dist"]
+}

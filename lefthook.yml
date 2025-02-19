@@ -1,0 +1,12 @@
+pre-commit:
+  commands:
+    lint:
+      glob: "*.{js,jsx,ts,tsx}"
+      exclude: "package.json"
+      run: bun lint
+      stage_fixed: true
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bun commitlint --edit {1}

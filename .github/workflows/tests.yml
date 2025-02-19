@@ -1,0 +1,62 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: latest
+
+    - name: Install dependencies
+      run: bun install
+
+    - name: Apply database migrations
+      run: bun db:deploy
+      env:
+        PRISMA_DB_URL: postgresql://test:test@localhost:5432/test?schema=public
+
+
+    - name: Generate Prisma Client
+      run: bun db:generate
+
+    - name: Run tests
+      env:
+        NODE_ENV: test
+        POSTGRES_USER: test
+        POSTGRES_PASSWORD: test
+        POSTGRES_DB: test
+        PRISMA_DB_URL: postgresql://test:test@localhost:5432/test?schema=public
+        DISCORD_TOKEN: dummy-token-for-tests
+        S3_ACCESS_KEY_ID: dummy-key-for-tests
+        S3_SECRET_ACCESS_KEY: dummy-secret-for-tests
+        AWS_BUCKET: dummy-bucket-for-tests
+        AWS_REGION: us-east-1
+        CDN_URL: https://dummy-cdn-for-tests
+        ORIGIN_HOSTNAME: dummy-origin-hostname-for-tests
+        ORIGIN_URL: https://dummy-origin-url-for-tests
+      run: bun test

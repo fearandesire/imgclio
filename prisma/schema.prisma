@@ -1,0 +1,27 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("PRISMA_DB_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Media {
+    id         String   @id @default(uuid())
+    name       String   @unique // The command name to retrieve the media
+    url        String // S3 URL where the media is stored
+    uploadedBy String // Discord user ID who uploaded
+    guildId    String // Discord server ID where uploaded
+    fileKey    String // S3 file key/path
+    mimeType   String // Media MIME type (image/png, image/gif, etc)
+    fileSize   Int // Size in bytes
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // Ensure name is unique per guild
+    @@unique([guildId, name])
+    // Indexes for common query patterns
+    @@index([guildId, name])
+    @@index([uploadedBy])
+}
