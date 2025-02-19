@@ -8,8 +8,8 @@ on:
 
 jobs:
   test:
-    # Skip job if commit message contains skip-ci
-    if: '!contains(github.event.head_commit.message, "skip-ci")'
+    # Skip job if commit message contains any skip CI indicators
+    if: '!contains(github.event.head_commit.message, ''[skip ci]'') && !contains(github.event.head_commit.message, ''[ci skip]'') && !contains(github.event.head_commit.message, ''[no ci]'') && !contains(github.event.head_commit.message, ''[skip actions]'') && !contains(github.event.head_commit.message, ''[actions skip]'')'
     runs-on: ubuntu-latest
 
     services:
